@@ -7,6 +7,7 @@ public:
     Tree_Node* left, right;
 
     Tree_Node();
+    Tree_Node(Tree_Node* Parent);
     Tree_Node(Tree_Node* Parent, char Data);
     ~Tree_Node();
 };

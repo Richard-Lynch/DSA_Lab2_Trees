@@ -14,8 +14,11 @@ Tree_Node* root;
 bool insert(char data);
 Tree_Node* search(char data);
 void print_sorted();
-
 void _delete();
+
+Tree_Node* left_most();
+Tree_Node* right_most();
+
 
 Tree();
 ~Tree();
