@@ -1,8 +1,18 @@
 #include "Tree.hpp"
 
 bool Tree::insert(char data){
-
-    return insert(data, root);
+    printf("inserting '%c' ", data);
+    bool inserted = insert(data, root);
+    if(inserted == true){
+        nodes++;
+    }
+    if(!inserted){
+        printf("failed to insert '%c'\n", data);
+    }
+    else{
+        printf("\n");
+    }
+    return inserted;
 }
 
 bool Tree::insert(char data, Tree_Node* Root){
@@ -29,9 +39,6 @@ bool Tree::insert(char data, Tree_Node* Root){
     }
     else{//otherwise the value is the same and has already been added
         inserted = false;;
-    }
-    if(inserted == true){
-        nodes++;
     }
     return inserted;
 }
@@ -93,7 +100,8 @@ void Tree::balance(){
     sort_tree(root, temp);
     _delete(root);
     root = NULL;
-    insert_sorted(temp, 0, nodes-1);
+    nodes = 0;
+    insert_sorted(temp, 0, index-1);
     index = 0;
     printf("Finished Balancing the tree.\n\n");
 }
@@ -112,16 +120,16 @@ void Tree::sort_tree(Tree_Node* Root, char array[]){
 }
 
 void Tree::insert_sorted(char array[], int first, int last){
-    if(last >= first){
-        int pivot = int((last - first)/2);
-
+    if(first < last){
+        int pivot = int((last + first)/2);
         insert(array[pivot]);
-
         insert_sorted (array, first, pivot-1);
         insert_sorted (array, pivot+1, last);
     }
+    else if(first == last){
+        insert(array[first]);
+    }
 }
-
 
 Tree_Node* Tree::left_most(Tree_Node* Root){
     Tree_Node* location = NULL;
@@ -140,7 +148,6 @@ Tree_Node* Tree::left_most(Tree_Node* Root){
 
 Tree_Node* right_most(Tree_Node* Root){
     Tree_Node* location = NULL;
-
     if(Root->right != NULL){//if there is a subtree on the right
         location = right_most(Root->right);//search the subtree on the right
     }
@@ -157,6 +164,7 @@ Tree::Tree(){
     root = NULL;
     index = 0;
     nodes = 0;
+
 }
 
 Tree::~Tree(){

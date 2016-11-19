@@ -10,15 +10,7 @@ int main(){
     printf("Starting instering '%s'\n\n", test_array);
     int i = 0;
     while(test_array[i] != '\0'){
-        printf("inserting '%c' ", test_array[i]);
-        bool inserted = test_tree.insert(test_array[i]);
-        if(!inserted){
-            printf("failed to insert '%c'\n", test_array[i]);
-        }
-        else{
-            printf("\n");
-        }
-        
+        test_tree.insert(test_array[i]);        
         i++;
     }
     printf("Finished instering '%s'\n\n", test_array);
@@ -28,8 +20,6 @@ int main(){
     test_tree.balance();
 
     test_tree.print_sorted();
-
-
 
     return 0;
 }
