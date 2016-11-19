@@ -1,129 +1,164 @@
 #include "Tree.hpp"
 
-
 bool Tree::insert(char data){
-    Tree_Node* curr = root;
-    Tree_Node* prev = NULL;
-    bool inserted = false;
 
-    while(!inserted){
-        if(curr == NULL){
-            curr = new Tree_Node(prev, data);
-            inserted = true;
+    return insert(data, root);
+}
+
+bool Tree::insert(char data, Tree_Node* Root){
+    bool inserted = true;
+
+    if(Root == NULL){//if the tree is empty
+        root = new Tree_Node(NULL, data);
+    }
+    else if(Root->data > data){//if data is less than node data add to left
+        if(Root->left == NULL){//if the left node is empty
+            Root->left = new Tree_Node(Root, data);//create and add left node
         }
-        else{
-            if(curr->data > data){
-                prev = curr;
-                curr = left;
-            }
-            else{
-                prev = curr;
-                curr = right;
-            } 
+        else{//if there is a left subtree
+            inserted = insert(data, Root->left);//insert into the subtree on the left
         }
+    }
+    else if(Root->data < data){//if data is less than node data add to right
+        if(Root->right == NULL){//if the right node is empty
+            Root->right = new Tree_Node(Root, data);//create and add right node
+        } 
+        else{//if there is a right subtree
+            inserted = insert(data, Root->right);//insert into the subtree on the right
+        }
+    }
+    else{//otherwise the value is the same and has already been added
+        inserted = false;;
+    }
+    if(inserted == true){
+        nodes++;
     }
     return inserted;
 }
 
 Tree_Node* Tree::search(char data){
-    Tree_Node* curr = root;
+    return search(data, root);
+}
 
-    while(curr){
-        if(curr->data == data)
-        {
-            return curr;
-        }
-        else if(curr->data > data){
-            curr = left;
-        }
-        else{
-            curr = right;
-        } 
+Tree_Node* Tree::search(char data, Tree_Node* Root){
+    Tree_Node* location = NULL;
+
+    if(Root->data > data){//if the data is less than the node data
+        location = search(data, Root->left);//search the subtree on the left
     }
-    return curr;
+    else if(Root->data < data){//if the data is greater than the node data
+        location = search(data, Root->right);//search the subtree on the right
+    }
+    else{//if the data is equal to the node data
+        location = Root;//the node has been found
+    }
+    return location;
 }
 
 void Tree::print_sorted(){
-    Tree_Node* curr = left_most();
-    Tree_Node* prev = curr->parent;
-
-    printf("Smallest\n%c\n", curr->data)
-
-    while(curr != root){
-        if(curr->left != NULL){
-            printf("%c\n", curr->left->data);
-        }
-        if(curr->right != NULL){
-             printf("%c\n", curr->right->data);
-        }
-        
-        else{
-            if(curr->data > data){
-                prev = curr;
-                curr = left;
-            }
-            else{
-                prev = curr;
-                curr = right;
-            } 
-        }
-    }
-    return inserted;
-
+    printf("Printing the sorted tree:\n");
+    print_sorted(root);
+    printf("Finished Printing the sorted tree\n\n");
 }
 
-void Tree::_delete(){
+void Tree::print_sorted(Tree_Node* Root){
+    if(Root->left != NULL){//if there is a subtree on the left
+        print_sorted(Root->left);//print the left subtree
+    }
 
+    printf("'%c'\n", Root->data);//print the current node
 
+    if(Root->right != NULL){//if there is a subtree on the right
+        print_sorted(Root->right);//print the right subtree
+    }
 }
 
-Tree_Node* TREE::left_most(){
-    Tree_Node* curr = root;
-    Tree_Node* prev = NULL;
-    bool found = false;
+void Tree::_delete(Tree_Node* Root){
+    if(root != NULL){
+        if(Root->left != NULL){//if there is a subtree on the left
+            delete(Root->left);//delete the left subtree
+        }
 
-    while(!found){
-        if(curr->left != NULL){
-            prev = curr;
-            curr = left;
-        }
-        else if(curr->right != NULL){
-            prev = curr;
-            curr = right;
-        }
-        else{
-            found = true;
+        if(Root->right != NULL){//if there is a subtree on the right
+            delete(Root->right);//delete the right subtree
         }
     }
-    return curr;
+
+    delete Root;//delete the current Node
 }
-Tree_Node* right_most(){
-    Tree_Node* curr = root;
-    Tree_Node* prev = NULL;
-    bool found = false;
 
-    while(!found){
-        if(curr->right != NULL){
-            prev = curr;
-            curr = right;
-        }
-        else if(curr->left != NULL){
-            prev = curr;
-            curr = left;
-        }
-        else{
-            found = true;
-        }
+void Tree::balance(){
+    printf("Tree is being balance.\n");
+    char temp[nodes];
+    sort_tree(root, temp);
+    _delete(root);
+    root = NULL;
+    insert_sorted(temp, 0, nodes-1);
+    index = 0;
+    printf("Finished Balancing the tree.\n\n");
+}
+
+void Tree::sort_tree(Tree_Node* Root, char array[]){
+    if(Root->left != NULL){//if there is a subtree on the left
+        sort_tree(Root->left, array);//add all the data in the left subtree
     }
-    return curr;
+
+    array[index] = Root->data;//add the current node data to the array
+    index++;
+
+    if(Root->right != NULL){//if there is a subtree on the right
+        sort_tree(Root->right, array);//add all the data in the right subtree
+    }
+}
+
+void Tree::insert_sorted(char array[], int first, int last){
+    if(last >= first){
+        int pivot = int((last - first)/2);
+
+        insert(array[pivot]);
+
+        insert_sorted (array, first, pivot-1);
+        insert_sorted (array, pivot+1, last);
+    }
+}
+
+
+Tree_Node* Tree::left_most(Tree_Node* Root){
+    Tree_Node* location = NULL;
+
+    if(Root->left != NULL){//if there is a subtree on the left
+        location = left_most(Root->left);//search the subtree on the left
+    }
+    else if(Root->right != NULL){//if there is a subtree on the right
+        location = left_most(Root->right);//search the subtree on the right
+    }
+    else{//if there are no more subtrees
+        location = Root;//the node has been found
+    }
+    return location;
+}
+
+Tree_Node* right_most(Tree_Node* Root){
+    Tree_Node* location = NULL;
+
+    if(Root->right != NULL){//if there is a subtree on the right
+        location = right_most(Root->right);//search the subtree on the right
+    }
+    else if(Root->left != NULL){//if there is a subtree on the left
+        location = right_most(Root->left);//search the subtree on the left
+    }
+    else{//if there are no more subtrees
+        location = Root;//the node has been found
+    }
+    return location;
 }
 
 Tree::Tree(){
-    root = new Tree_Node;
-
-
+    root = NULL;
+    index = 0;
+    nodes = 0;
 }
 
 Tree::~Tree(){
-    _delete();
+    _delete(root);
 }

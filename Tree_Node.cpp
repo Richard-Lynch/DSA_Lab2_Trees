@@ -1,20 +1,35 @@
 #include "Tree_Node.hpp"
 
+bool Tree_Node::isLeaf(){
+    if(left == NULL && right == NULL){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+bool Tree_Node::isRoot(){
+    if(parent == NULL){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
 Tree_Node::Tree_Node(){
-    parent = left = right = NULL;
-    data = NULL;
+    parent = NULL;
+    left = NULL;
+    right = NULL;
+    data = '\0';
 }
 
 Tree_Node::Tree_Node(Tree_Node* Parent, char Data){
     parent = Parent;
-    left = right = NULL;
-    data = NULL;
-}
-
-Tree_Node::Tree_Node(Tree_Node* Parent, char Data){
-    parent = Parent;
-    left = right = NULL;
     data = Data;
+    left = NULL;
+    right = NULL;
 }
 
 Tree_Node::~Tree_Node(){
