@@ -5,7 +5,7 @@
 int main(){
     Tree test_tree;
 
-    char test_array[] = "the quick brown fox jumps over the lazy dog";
+    char test_array[] = "The {quick}, (brown) Fox jumps over the lazy-Dog!";
 
     printf("Starting instering '%s'\n\n", test_array);
     int i = 0;

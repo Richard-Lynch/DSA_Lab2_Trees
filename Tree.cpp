@@ -2,12 +2,17 @@
 
 bool Tree::insert(char data){
     printf("inserting '%c' ", data);
+
+    if((data < 65 ) || (data > 90 && data < 97) || (data > 122)){
+        printf("failed to insert '%c', char not allowed\n", data);
+        return false;
+    }
     bool inserted = insert(data, root);
     if(inserted == true){
         nodes++;
     }
     if(!inserted){
-        printf("failed to insert '%c'\n", data);
+        printf("failed to insert '%c', data already stored in tree\n", data);
     }
     else{
         printf("\n");
@@ -130,6 +135,7 @@ void Tree::insert_sorted(char array[], int first, int last){
         insert(array[first]);
     }
 }
+
 
 Tree_Node* Tree::left_most(Tree_Node* Root){
     Tree_Node* location = NULL;
