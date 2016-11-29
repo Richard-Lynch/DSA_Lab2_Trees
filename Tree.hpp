@@ -13,6 +13,7 @@ Tree_Node* search(char data);//returns a pointer to the node containing the char
 Tree(char chars[]);//constructor for a tree given an array of unsorted chars(requirement 5)
 
 void balance();//if the current tree is unbalanced this method will balance the tree
+bool is_balanced();//returns true if the tree is balanced
 Tree();//constructor for an empty tree
 
 private:
@@ -20,6 +21,11 @@ Tree_Node* root;//the pointer to the root node, this is managed by the class
 
 int nodes;//the number of nodes in the tree, managed by the class
 int index;//the current index for the balance function, managed by the class
+int left;//number of nodes in left subtree
+int right;//number of nodes in right subtree
+int left_depth;//depth of left subtree
+int right_depth;//depth of right subtree
+int depth;//tempory value for depth of tree
 
 bool insert(char data, Tree_Node* Root);//inserts a node recursivly, called by the public insert function
 void print_sorted(Tree_Node* Root);//prints the listed in a sorted manner recursivly, called by the public print function

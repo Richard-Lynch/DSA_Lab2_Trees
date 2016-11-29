@@ -7,9 +7,22 @@ bool Tree::insert(char data){   //public insert method
         printf("failed to insert '%c', char not allowed\n", data);  //do not insert and leave function
         return false;
     }
+    depth = 0;  //reset the temporay depth value for this node to 0 before inserting
     bool inserted = insert(data, root);//otherwise call the private insert function, starting at the trees root
     if(inserted == true){   //if the char was inserted
         nodes++;            //increment the number of nodes
+        if(data < root->data){  //if node was added to left sub tree
+            left++;             //add one to left counter
+            if(depth > left_depth){ //if the depth of the node added is greater than the current deepest node in the left tree
+                left_depth = depth; //it is the new deepest node
+            }
+        }
+        if(data > root->data){  //if node was added to right sub tree
+            right++;            //add one to right counter
+            if(depth > right_depth){    //if the depth of the node added is greater than the current deepest node in the left tree
+                right_depth = depth;    //it is the new deepest node
+            }
+        }
     }
     if(!inserted){                                                              //if the char wasnt inserted
         printf("failed to insert '%c', data already stored in tree\n", data);   //then it was already stored
@@ -22,7 +35,7 @@ bool Tree::insert(char data){   //public insert method
 
 bool Tree::insert(char data, Tree_Node* Root){  //private insert method, called by the public insert, and by itself recursivly
     bool inserted = true;       //default to true
-
+    depth++;    //the depth of the current node increases by 1
     if(Root == NULL){           //if the tree is empty
         root = new Tree_Node(NULL, data);               //create a new Tree_Node to be the root and insert the data
     }
@@ -100,12 +113,16 @@ void Tree::_delete(Tree_Node* Root){    //private delete method, called by the d
 }
 
 void Tree::balance(){   //public balance method
-    printf("Tree is being balance.\n"); //used for debugging   
+    printf("Tree is being balanced\n"); //used for debugging   
     char temp[nodes];                   //create a temporary array to store a sorted list of all nodes; this adds N auxilary space complexity
     sort_tree(root, temp);              //store each node in the tree into temp in a sorted order, by calling private sort_tree method
     _delete(root);                      //delete the current tree, by calling the private _delete function
     root = NULL;                        //set root to null as there is no longer is a tree
     nodes = 0;                          //set number of nodes to 0 as there are no nodes in an empty tree
+    left = 0;                           //set number of left nodes to 0
+    right = 0;                          //set number of right nodes to 0
+    left_depth = 0;                     //set depth of left subtree to 0
+    right_depth = 0;                    //set depth of right subtree to 0
     insert_sorted(temp, 0, index-1);    //create a new balanced tree for the sorted array, by calling private insert_sorted method
     index = 0;                          //reset the index value, used by sort tree and insert_sorted
     printf("Finished Balancing the tree.\n\n");
@@ -136,17 +153,32 @@ void Tree::insert_sorted(char array[], int first, int last){    //will create a 
     }
 }
 
+bool Tree::is_balanced(){
+    if((abs(left-right) <2) && (abs(left_depth-right_depth)<2)){    //if the depth and number of items on both sides of the tree are the same
+        return true;                                                //the tree is balanced
+    }
+    else return false;                                              //otherwise its not
+}
+
 
 Tree::Tree(){   //constructor for empty tree
     root = NULL;    //initialises root
     index = 0;      //sets initial index to 0
     nodes = 0;      //sets the number of nodes to 0
+    left = 0;       //sets the number of left nodes to 0
+    right = 0;      //sets the number of right nodes to 0
+    left_depth = 0; //sets the depth of left nodes to 0
+    right_depth = 0;//sets the depth of right nodes to 0
 }
 
 Tree::Tree(char chars[]){   //constructor for a tree from a list of chars
     root = NULL;    //initialises root
     index = 0;      //sets initial index to 0
     nodes = 0;      //sets the number of nodes to 0
+    left = 0;       //sets the number of left nodes to 0
+    right = 0;      //sets the number of right nodes to 0
+    left_depth = 0; //sets the depth of left nodes to 0
+    right_depth = 0;//sets the depth of right nodes to 0
 
     printf("Calculating the size of the array\n");
     int size_of_array = 0;  //the size of the array being added
